@@ -1,0 +1,2 @@
+def pubjs (request):
+  pass
