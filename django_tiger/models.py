@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.urlresolvers import reverse
 
 import stripe
 stripe.api_key = settings.STRIPE_SECRET
@@ -54,6 +55,12 @@ class Charge (models.Model):
   def Amount (self):
     return '%.2f' % (self.amount / 100.0)
     
+  def Refunded (self):
+    if self.refunded:
+      return '%.2f' % (self.refunded / 100.0)
+      
+    return ''
+    
   def __unicode__ (self):
     return self.desc
     
@@ -61,6 +68,15 @@ class Charge (models.Model):
     ordering = ('-created',)
     get_latest_by = 'created'
     
+  def Actions (self):
+    if self.refunded is None or self.refunded < self.amount:
+      url = reverse('tiger:admin_refund', args=[self.id])
+      return '<a href="javascript: void()" onclick="refund_charge(\'%s\', %d)">Refund</a>' % (url, self.amount)
+      
+    return ''
+    
+  Actions.allow_tags = True
+  
 SUB_STATUS = (
   ('active', 'Active'),
   ('expired', 'Expired'),

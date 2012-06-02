@@ -9,11 +9,15 @@ class CCAdmin (admin.ModelAdmin):
   date_hierarchy = 'created'
   
 class ChargeAdmin (admin.ModelAdmin):
-  list_display = ('desc', 'Amount', 'refunded', 'created')
+  list_display = ('desc', 'Amount', 'Refunded', 'created', 'Actions')
   search_fields = ('desc',)
   date_hierarchy = 'created'
   raw_id_fields = ('card',)
   
+  class Media:
+    css = {"all": ()}
+    js = ("tiger/admin_tiger.js",)
+    
 class SubAdmin (admin.ModelAdmin):
   list_display = ('plan_id', 'card', 'status', 'created')
   list_filter = ('status',)
